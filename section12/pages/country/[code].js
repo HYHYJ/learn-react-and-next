@@ -1,4 +1,5 @@
 //라우터의 모든 기능이 다들어있다.
+import SubLayout from "@/components/SubLayout";
 import { useRouter } from "next/router";
 
 export default function Country() {
@@ -7,3 +8,5 @@ export default function Country() {
   const { code } = router.query;
   return <div>Country {code}</div>;
 }
+
+Country.Layout = SubLayout;

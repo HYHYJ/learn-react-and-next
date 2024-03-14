@@ -1,42 +1,17 @@
-//CSR: 서버에 요청 안보내고 자체적으로 컴포넌트를 바꾸는
-import Link from "next/link";
-import { useRouter } from "next/router";
-
-export default function Home() {
-  const code = "KOR";
-  //라우터 기능이 담김
-  const router = useRouter();
-
-  const onClickButton = () => {
-    //다른 곳으로 이동
-    router.push({
-      pathname: "/country/[code]",
-      query: { code: code },
-    });
-  };
-  return (
-    <div>
-      Home page
-      <div>
-        <button onClick={onClickButton}>SearchPage로 이동</button>
-      </div>
-      <div>
-        <Link href={"/search"}>Search Page 이동</Link>
-      </div>
-      <div>
-        <Link href={`/country/${code}`}>{code} 페이지로 이동</Link>
-      </div>
-      {/* 이동하고자 하는 */}
-      <div>
-        <Link
-          href={{
-            pathname: "/country/[code]",
-            query: { code: code },
-          }}
-        >
-          {code} 페이지로 이동
-        </Link>
-      </div>
-    </div>
-  );
+export default function Home({ name }) {
+  console.log("Home");
+  return <div>{name}</div>;
 }
+//SSR 방식으로 된다
+export const getServerSideProps = async () => {
+  // SSR을 위해 서버측에서 페이지 컴포넌트에게 전달할 데이터를 설정하는 함수
+
+  //서버에서만 실행되서 브라우저의 console에 안나옴
+  console.log("getServerSideProps Called");
+  return {
+    //?무조건 객체로 설정하기
+    props: {
+      name: "KOREA",
+    },
+  };
+};

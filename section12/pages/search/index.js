@@ -1,7 +1,25 @@
 import { fetchSearchResults } from "@/api";
 import SubLayout from "@/components/SubLayout";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-export default function Search({ countries }) {
+export default function Search() {
+  const router = useRouter();
+  const { q } = router.query;
+
+  const [countries, setCountries] = useState([]);
+
+  const setData = async () => {
+    const data = await fetchSearchResults(q);
+    setCountries(data);
+  };
+
+  useEffect(() => {
+    if (q) {
+      setData();
+    }
+  });
+
   return (
     <div>
       {countries.map((country) => (
@@ -12,21 +30,3 @@ export default function Search({ countries }) {
 }
 //* 위에 함수는 객체로도 쓸 수 있어서 밑에처럼 사용가능
 Search.Layout = SubLayout;
-
-export const getServerSideProps = async (context) => {
-  // 1. 검색 결과 API 호출
-  // 2. Props 리턴
-
-  const { q } = context.query;
-
-  let countries = [];
-  if (q) {
-    countries = await fetchSearchResults(q);
-  }
-
-  return {
-    props: {
-      countries,
-    },
-  };
-};

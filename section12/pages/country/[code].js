@@ -10,6 +10,13 @@ export default function Country({ country }) {
   const { code } = router.query;
   //url 코드 값 가져오기
 
+  //Fallback 상태인지 아닌지 알려줌.
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
+  if (!country) {
+    return <div>존재하지 않는 국가입니다.</div>;
+  }
   return (
     <div>
       {country.commonName} {country.officialName}
@@ -19,15 +26,25 @@ export default function Country({ country }) {
 
 Country.Layout = SubLayout;
 
+export const getStaticPaths = async () => {
+  return {
+    paths: [{ params: { code: "ABW" } }, { params: { code: "KOR" } }],
+    //없는 경로라면..?
+    fallback: true,
+  };
+};
+
 //? context: url 정보를 가져오는 context 객체
-export const getServerSideProps = async (context) => {
+export const getStaticProps = async (context) => {
   // 서버측에서 데이터를 패치하고싶으면 context에서 가져오면 된다.
   const { code } = context.params;
+  console.log(`${code} 페이지 생성!`);
   let country = null;
   if (code) {
     country = await fetchCountry(code);
   }
   return {
     props: { country },
+    revalidate: 3,
   };
 };
